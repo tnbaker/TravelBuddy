@@ -39,6 +39,8 @@ public class travelBuddyGUI extends Application
 		window.setScene(startScene);
 		window.setTitle("Travel Buddy");
 		window.show();	
+		
+		
 	}
 
 	private void startScreen() 
@@ -91,6 +93,7 @@ public class travelBuddyGUI extends Application
 		selectBoroughBox.setOnAction(e ->
 		{
 			window.setScene(entertainmentScene);
+			window.centerOnScreen();
 		});
 		
 		
@@ -110,18 +113,23 @@ public class travelBuddyGUI extends Application
 		
 		// check boxes for entertainment
 		architectureCheck = new CheckBox("Architecture");
+		
 		barsCheck = new CheckBox("Bars");
 		museumsCheck = new CheckBox("Museums");
 		restaurantsCheck = new CheckBox("Restaurants");
 		
 		entertainmentOptionsBox = new VBox();
 		entertainmentOptionsBox.getChildren().addAll(architectureCheck, barsCheck, museumsCheck, restaurantsCheck);
+		entertainmentOptionsBox.setAlignment(Pos.CENTER_LEFT);
+		entertainmentOptionsBox.setPadding(new Insets(0,20,10,20));
+		entertainmentOptionsBox.setSpacing(40);
 		
 		entertainmentPane = new BorderPane();
 		entertainmentPane.setTop(currentBoroughText);
 		BorderPane.setAlignment(currentBoroughText, Pos.CENTER);
+		entertainmentPane.setRight(entertainmentOptionsBox);
 		
-		entertainmentScene = new Scene(entertainmentPane, 500, 500);
+		entertainmentScene = new Scene(entertainmentPane, 800, 800);
 	}
 	
 	
