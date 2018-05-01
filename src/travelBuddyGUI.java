@@ -239,5 +239,6 @@ public class travelBuddyGUI extends Application
 	{
 		System.out.println("Remove\n");
 		favoriteBox.getChildren().remove(1);
+		//Hello
 	}
 }
