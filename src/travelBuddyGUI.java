@@ -2,8 +2,10 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import javafx.application.*;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -13,6 +15,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -21,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -33,6 +37,7 @@ public class travelBuddyGUI extends Application
 	public ButtonType buttonTypeFavorite, buttonTypeSaveForLater, buttonTypeCancel, buttonTypeRemove;
 	public CheckBox architectureCheck, barsCheck, museumsCheck, restaurantsCheck;
 	public ComboBox<String> selectCityBox, selectBoroughBox;
+	public HashMap<Integer, String> weekdaysMap;
 	public Image manhattanImage, pinImage;
 	public ImageView manhattanImageView, pinImageView; 
 	public Pane mapPane; 
@@ -173,14 +178,7 @@ public class travelBuddyGUI extends Application
 		backImageView.smoothProperty();
 		backButton.setGraphic(backImageView);
 		
-		HashMap<Integer, String> weekdaysMap = new HashMap<Integer, String>();
-		weekdaysMap.put(1, "Mon");
-		weekdaysMap.put(2, "Tue");
-		weekdaysMap.put(3, "Wed");
-		weekdaysMap.put(4, "Thu");
-		weekdaysMap.put(5, "Fri");
-		weekdaysMap.put(6, "Sat");
-		weekdaysMap.put(7, "Sun");
+		weekdaysHashMap();
 		
 		for(int i = 1; i < 8; i++)
 		{
@@ -197,6 +195,17 @@ public class travelBuddyGUI extends Application
 		Scene savedScene = new Scene(savedPane, 300, 500);
 		window.setScene(savedScene);
 		window.centerOnScreen();
+	}
+
+	private void weekdaysHashMap() {
+		weekdaysMap = new HashMap<Integer, String>();
+		weekdaysMap.put(1, "Mon");
+		weekdaysMap.put(2, "Tue");
+		weekdaysMap.put(3, "Wed");
+		weekdaysMap.put(4, "Thu");
+		weekdaysMap.put(5, "Fri");
+		weekdaysMap.put(6, "Sat");
+		weekdaysMap.put(7, "Sun");
 	}
 
 	private void entertainment() 
@@ -293,12 +302,67 @@ public class travelBuddyGUI extends Application
 	
 	private void saveForLater()
 	{
-		System.out.println("saved for later");
+		// Time, weekday, and notes
+		ComboBox<String> selectTimeBoxHour = new ComboBox<String>();
+		selectTimeBoxHour.setPromptText("Hour");
+		for(int i = 1; i <= 23; i++)
+		{
+			selectTimeBoxHour.getItems().addAll(Integer.toString(i));
+		}
+		
+		ComboBox<String> selectTimeBoxMinute = new ComboBox<String>();
+		selectTimeBoxMinute.setPromptText("Minute");
+		for(int i = 1; i <= 59; i++)
+		{
+			selectTimeBoxMinute.getItems().addAll(Integer.toString(i));
+		}
+		
+		ComboBox<String> selectTimeBoxSecond = new ComboBox<String>();
+		selectTimeBoxSecond.setPromptText("Second");
+		for(int i = 1; i <= 59; i++)
+		{
+			selectTimeBoxSecond.getItems().addAll(Integer.toString(i));
+		}
+		
+		ComboBox<String> selectWeekday = new ComboBox<String>();
+		selectWeekday.setPromptText("Weekday");
+		for(int i = 1; i <= 7; i++)
+		{
+			weekdaysHashMap();
+			selectWeekday.getItems().addAll(weekdaysMap.get(i));
+		}
+		
+		
+		HBox timeBox = new HBox();
+		timeBox.getChildren().addAll(selectTimeBoxHour, selectTimeBoxMinute, selectTimeBoxSecond);
+		timeBox.setAlignment(Pos.CENTER);
+		
+		TextField notesField = new TextField("Take some notes!"); 
+		notesField.setAlignment(Pos.CENTER);
+		
+		Button returnToMain = new Button("Done");
+		returnToMain.setOnAction(e ->
+		{
+			window.setScene(entertainmentScene);
+			window.centerOnScreen();
+		});
+		
+		VBox saveForLaterBox = new VBox();
+		saveForLaterBox.getChildren().addAll(timeBox, selectWeekday, notesField, returnToMain);
+		saveForLaterBox.setAlignment(Pos.CENTER);
+		saveForLaterBox.setPadding(new Insets(0,20,10,20));
+		saveForLaterBox.setSpacing(30);
+		
+		StackPane pane = new StackPane();
+		pane.getChildren().addAll(saveForLaterBox);
+		
+		Scene saveEntertainmentScene = new Scene(pane, 300, 300);
+		window.setScene(saveEntertainmentScene);
+		window.centerOnScreen();
 	}
 	
 	private void removeFavorite()
 	{
-		System.out.println("Remove\n");
 		favoriteBox.getChildren().remove(1);
 	}
 }
