@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Optional;
 
 import javafx.application.*;
@@ -10,12 +11,15 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -25,8 +29,8 @@ public class travelBuddyGUI extends Application
 {
 	public Alert pinAlert, favoriteAlert; 
 	public BorderPane entertainmentPane; 
-	public Button startButton, pinButton;
-	public ButtonType buttonTypeFavorite, buttonTypeCancel, buttonTypeRemove;
+	public Button startButton, pinButton, backButton;
+	public ButtonType buttonTypeFavorite, buttonTypeSaveForLater, buttonTypeCancel, buttonTypeRemove;
 	public CheckBox architectureCheck, barsCheck, museumsCheck, restaurantsCheck;
 	public ComboBox<String> selectCityBox, selectBoroughBox;
 	public Image manhattanImage, pinImage;
@@ -132,14 +136,67 @@ public class travelBuddyGUI extends Application
 		
 		mapOfManhattan();
 		
+		Hyperlink savedForLater = new Hyperlink("Saved for later");
+		savedForLater.setOnAction(e ->
+		{
+			savedForLaterScreen();
+		});
+		
 		entertainmentPane = new BorderPane();
 		entertainmentPane.setTop(currentBoroughText);
 		BorderPane.setAlignment(currentBoroughText, Pos.CENTER);
 		entertainmentPane.setLeft(favoriteBox);
 		entertainmentPane.setRight(entertainmentOptionsBox);
 		entertainmentPane.setCenter(scrollManhattanMap);
+		entertainmentPane.setBottom(savedForLater);
 		
 		entertainmentScene = new Scene(entertainmentPane, 750, 700);
+	}
+
+	private void savedForLaterScreen() {
+		BorderPane savedPane = new BorderPane();
+		TabPane weekdayPane = new TabPane();
+		backButton = new Button();
+		backButton.setPrefHeight(15);
+		backButton.setPrefWidth(41);
+		backButton.setOnAction(e ->
+		{
+			window.setScene(entertainmentScene);
+			window.centerOnScreen();
+		});
+		
+		Image backImage = new Image("backArrow.png");
+		ImageView backImageView = new ImageView();
+		backImageView.setImage(backImage);
+		backImageView.setFitHeight(20);
+		backImageView.setFitWidth(20);
+		backImageView.smoothProperty();
+		backButton.setGraphic(backImageView);
+		
+		HashMap<Integer, String> weekdaysMap = new HashMap<Integer, String>();
+		weekdaysMap.put(1, "Mon");
+		weekdaysMap.put(2, "Tue");
+		weekdaysMap.put(3, "Wed");
+		weekdaysMap.put(4, "Thu");
+		weekdaysMap.put(5, "Fri");
+		weekdaysMap.put(6, "Sat");
+		weekdaysMap.put(7, "Sun");
+		
+		for(int i = 1; i < 8; i++)
+		{
+			Tab weekdayTab = new Tab();
+			weekdayTab.setText(weekdaysMap.get(i));
+			weekdayTab.setClosable(false);
+			weekdayPane.getTabs().add(weekdayTab);
+		}
+		
+		HBox savedForLaterHBox = new HBox(); 
+		savedForLaterHBox.getChildren().addAll(backButton, weekdayPane);			
+		savedPane.setTop(savedForLaterHBox);
+		
+		Scene savedScene = new Scene(savedPane, 300, 500);
+		window.setScene(savedScene);
+		window.centerOnScreen();
 	}
 
 	private void entertainment() 
@@ -189,15 +246,16 @@ public class travelBuddyGUI extends Application
 			pinAlert.setContentText("Venue Information");
 			
 			buttonTypeFavorite = new ButtonType("Favorite");
+			buttonTypeSaveForLater = new ButtonType("Save for Later");
 			buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 
-			pinAlert.getButtonTypes().setAll(buttonTypeFavorite, buttonTypeCancel);
+			pinAlert.getButtonTypes().setAll(buttonTypeFavorite, buttonTypeSaveForLater, buttonTypeCancel);
 
 			Optional<ButtonType> result = pinAlert.showAndWait();
 			if (result.get() == buttonTypeFavorite)
-			{
 				addToFavorite();
-			} 
+			if (result.get() == buttonTypeSaveForLater)
+				saveForLater();	
 		});
 		
 		pinButton.relocate(190, 140); 
@@ -228,17 +286,19 @@ public class travelBuddyGUI extends Application
 
 			Optional<ButtonType> result = pinAlert.showAndWait();
 			if (result.get() == buttonTypeRemove)
-			{
 				removeFavorite();
-			} 
 		});
 		favoriteBox.getChildren().addAll(addedFav);
+	}
+	
+	private void saveForLater()
+	{
+		System.out.println("saved for later");
 	}
 	
 	private void removeFavorite()
 	{
 		System.out.println("Remove\n");
 		favoriteBox.getChildren().remove(1);
-		//Hello
 	}
 }
