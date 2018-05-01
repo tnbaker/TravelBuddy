@@ -61,7 +61,7 @@ public class travelBuddyGUI extends Application
 		cityBoroughScreen();
 		entertainmentScreen();
 		
-		window.setScene(entertainmentScene);
+		window.setScene(startScene);
 		window.setTitle("Travel Buddy");
 		window.show();			
 	}
@@ -117,6 +117,11 @@ public class travelBuddyGUI extends Application
 		{
 			window.setScene(entertainmentScene);
 			window.centerOnScreen();
+			Alert topPicksAlert = new Alert(AlertType.INFORMATION);
+			topPicksAlert.setTitle("Top Picks");
+			topPicksAlert.setHeaderText("Top Picks of the Day!");
+			topPicksAlert.setContentText("Information");
+			topPicksAlert.showAndWait();
 		});
 		
 		
@@ -142,6 +147,8 @@ public class travelBuddyGUI extends Application
 		mapOfManhattan();
 		
 		Hyperlink savedForLater = new Hyperlink("Saved for later");
+		savedForLater.setAlignment(Pos.CENTER);
+		savedForLater.setPadding(new Insets(0,20,10,20));
 		savedForLater.setOnAction(e ->
 		{
 			savedForLaterScreen();
@@ -226,9 +233,9 @@ public class travelBuddyGUI extends Application
 		favoriteText = new Text("Favorites");
 		favoriteBox = new VBox(); 
 		favoriteBox.getChildren().addAll(favoriteText);
-		favoriteBox.setAlignment(Pos.CENTER);
+		favoriteBox.setAlignment(Pos.TOP_CENTER);
 		favoriteBox.setPadding(new Insets(0,20,10,20));
-		favoriteBox.setSpacing(40);
+		favoriteBox.setSpacing(10);
 	}
 
 	private void mapOfManhattan() 
