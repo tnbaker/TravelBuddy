@@ -1,10 +1,19 @@
 import javafx.application.*;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -17,7 +26,11 @@ public class travelBuddyGUI extends Application
 	public Button startButton;
 	public CheckBox architectureCheck, barsCheck, museumsCheck, restaurantsCheck;
 	public ComboBox<String> selectCityBox, selectBoroughBox;
+	public DoubleProperty zoomProperty; 
+	public Image manhattanImage;
+	public ImageView manhattanImageView; 
 	public Scene startScene, cityBoroughScene, entertainmentScene; 
+	public ScrollPane scrollManhattanMap;
 	public Stage window;
 	public Text startText, selectCityText, selectBoroughText, currentBoroughText;
 	public VBox startBox, cityBoroughBox, entertainmentOptionsBox; 
@@ -38,9 +51,7 @@ public class travelBuddyGUI extends Application
 		
 		window.setScene(startScene);
 		window.setTitle("Travel Buddy");
-		window.show();	
-		
-		
+		window.show();			
 	}
 
 	private void startScreen() 
@@ -113,10 +124,11 @@ public class travelBuddyGUI extends Application
 		
 		// check boxes for entertainment
 		architectureCheck = new CheckBox("Architecture");
-		
 		barsCheck = new CheckBox("Bars");
 		museumsCheck = new CheckBox("Museums");
 		restaurantsCheck = new CheckBox("Restaurants");
+		
+		mapOfManhattan();
 		
 		entertainmentOptionsBox = new VBox();
 		entertainmentOptionsBox.getChildren().addAll(architectureCheck, barsCheck, museumsCheck, restaurantsCheck);
@@ -128,8 +140,45 @@ public class travelBuddyGUI extends Application
 		entertainmentPane.setTop(currentBoroughText);
 		BorderPane.setAlignment(currentBoroughText, Pos.CENTER);
 		entertainmentPane.setRight(entertainmentOptionsBox);
+		entertainmentPane.setCenter(scrollManhattanMap);
 		
 		entertainmentScene = new Scene(entertainmentPane, 800, 800);
+	}
+
+	private void mapOfManhattan() {
+		// Map of Manhattan
+		manhattanImage = new Image("MapOfManhattan.jpg");
+		manhattanImageView = new ImageView();
+		scrollManhattanMap = new ScrollPane();
+		zoomProperty = new SimpleDoubleProperty(200);
+		zoomProperty.addListener(new InvalidationListener()
+		{
+			@Override
+			public void invalidated(Observable arg0) 
+			{
+				// TODO Auto-generated method stub
+				manhattanImageView.setFitWidth(zoomProperty.get() * 4);
+                manhattanImageView.setFitHeight(zoomProperty.get() * 3);				
+			}
+			
+		});
+		
+		scrollManhattanMap.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>()
+		{
+			@Override
+			public void handle(ScrollEvent event) 
+			{
+				// TODO Auto-generated method stub
+				if (event.getDeltaY() > 0) 
+                    zoomProperty.set(zoomProperty.get() * 1.1);
+                else if (event.getDeltaY() < 0) 
+                    zoomProperty.set(zoomProperty.get() / 1.1);
+			}
+		});
+
+		manhattanImageView.setImage(manhattanImage);
+		manhattanImageView.preserveRatioProperty().set(true);
+		scrollManhattanMap.setContent(manhattanImageView);
 	}
 	
 	
