@@ -69,7 +69,10 @@ public class travelBuddyGUI extends Application
 	private void startScreen() 
 	{
 		startText = new Text("Welcome to Travel Buddy!");
-		startButton = new Button("Start");
+		startText.setStyle("-fx-font-size: 22;-fx-stroke:#ff1493");
+		
+		startButton = new Button("Start ->");
+		startButton.setStyle("-fx-background-color:#ff1493; -fx-text-fill:white");
 		startButton.setOnAction(e ->
 		{	
 			window.setScene(cityBoroughScene);
@@ -80,6 +83,7 @@ public class travelBuddyGUI extends Application
 		startBox.setAlignment(Pos.CENTER);
 		startBox.setPadding(new Insets(0,20,10,20));
 		startBox.setSpacing(40);
+		startBox.setStyle("-fx-background-color: #4169e1");
 		
 		startScene = new Scene(startBox, 300, 500);
 	}
@@ -87,32 +91,34 @@ public class travelBuddyGUI extends Application
 	private void cityBoroughScreen()
 	{
 		selectCityText = new Text("Please select a city");
+		selectCityText.setStyle("-fx-font-size: 22;-fx-stroke:#ff1493");
 		selectCityBox = new ComboBox<String>();
-		
-		selectBoroughText = new Text("Please select a borough");
-		selectBoroughBox = new ComboBox<String>();
-		selectBoroughText.setVisible(false);
-		selectBoroughBox.setVisible(false);
-		
-		// Fix city combo box 
-		selectCityBox.getItems().addAll(
-				"New York City",
-				"Paris"
-				);
+		selectCityBox.getItems().addAll
+		(
+			"Miami, FL, USA",
+			"New York City, NY, USA",
+			"Quebec City, Quebec, Canada",
+			"Seattle, Washington, USA"
+		);
 		selectCityBox.setOnAction(e ->
 		{
 			selectBoroughText.setVisible(true);
 			selectBoroughBox.setVisible(true);
 		});
 		
-		// Fix borough combo box
-		selectBoroughBox.getItems().addAll(
-				"Brooklyn",
-				"Manhattan",
-				"Queens",
-				"Staten Island",
-				"The Bronx"
-				);
+		selectBoroughText = new Text("Please select a borough");
+		selectBoroughText.setStyle("-fx-font-size: 22;-fx-stroke:#ff1493");
+		selectBoroughText.setVisible(false);
+		selectBoroughBox = new ComboBox<String>();
+		selectBoroughBox.setVisible(false);
+		selectBoroughBox.getItems().addAll
+		(
+			"Brooklyn",
+			"Manhattan",
+			"Queens",
+			"Staten Island",
+			"The Bronx"
+		);
 		selectBoroughBox.setOnAction(e ->
 		{
 			window.setScene(entertainmentScene);
@@ -130,6 +136,7 @@ public class travelBuddyGUI extends Application
 		cityBoroughBox.setAlignment(Pos.CENTER);
 		cityBoroughBox.setPadding(new Insets(0,20,10,20));
 		cityBoroughBox.setSpacing(40);
+		cityBoroughBox.setStyle("-fx-background-color:#4169e1");
 		
 		cityBoroughScene = new Scene(cityBoroughBox, 300, 500);
 	}
@@ -137,7 +144,8 @@ public class travelBuddyGUI extends Application
 	private void entertainmentScreen()
 	{
 		// Fix text to display whatever borough is selected
-		currentBoroughText = new Text("Current Borough");
+		currentBoroughText = new Text("Manhattan");
+		currentBoroughText.setStyle("-fx-font-size: 22");
 		
 		// Available entertainment
 		entertainment();
@@ -161,6 +169,7 @@ public class travelBuddyGUI extends Application
 		entertainmentPane.setRight(entertainmentOptionsBox);
 		entertainmentPane.setCenter(scrollManhattanMap);
 		entertainmentPane.setBottom(savedForLater);
+		entertainmentPane.setStyle("-fx-background:#b0e0e6");
 		
 		entertainmentScene = new Scene(entertainmentPane, 750, 700);
 	}
@@ -231,6 +240,7 @@ public class travelBuddyGUI extends Application
 	private void favorites() 
 	{
 		favoriteText = new Text("Favorites");
+		favoriteText.setStyle("-fx-font-size: 22");
 		favoriteBox = new VBox(); 
 		favoriteBox.getChildren().addAll(favoriteText);
 		favoriteBox.setAlignment(Pos.TOP_CENTER);
@@ -288,6 +298,7 @@ public class travelBuddyGUI extends Application
 	{
 		String added = pinAlert.getTitle();
 		Hyperlink addedFav = new Hyperlink(added);
+		addedFav.setStyle("-fx-font-size: 14");
 		addedFav.setOnAction(e ->
 		{
 			favoriteAlert = new Alert(AlertType.CONFIRMATION);
