@@ -1,13 +1,17 @@
+import java.util.Optional;
+
 import javafx.application.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -18,9 +22,10 @@ import javafx.stage.Stage;
 
 public class travelBuddyGUI extends Application
 {
-
+	public Alert pinAlert; 
 	public BorderPane entertainmentPane; 
-	public Button startButton;
+	public Button startButton, pinButton;
+	public ButtonType buttonTypeFavorite, buttonTypeCancel;
 	public CheckBox architectureCheck, barsCheck, museumsCheck, restaurantsCheck;
 	public ComboBox<String> selectCityBox, selectBoroughBox;
 	public Image manhattanImage, pinImage;
@@ -28,8 +33,8 @@ public class travelBuddyGUI extends Application
 	public Scene startScene, cityBoroughScene, entertainmentScene; 
 	public ScrollPane scrollManhattanMap;
 	public Stage window;
-	public Text startText, selectCityText, selectBoroughText, currentBoroughText;
-	public VBox startBox, cityBoroughBox, entertainmentOptionsBox; 
+	public Text startText, selectCityText, selectBoroughText, currentBoroughText, favoriteText;
+	public VBox startBox, cityBoroughBox, entertainmentOptionsBox, favoriteBox; 
 	
 	public static void main(String[] args)
 	{
@@ -118,27 +123,44 @@ public class travelBuddyGUI extends Application
 		// Fix text to display whatever borough is selected
 		currentBoroughText = new Text("Current Borough");
 		
-		// check boxes for entertainment
+		// Available entertainment
+		entertainment();
+		// Favorites
+		favorites();
+		
+		mapOfManhattan();
+		
+		entertainmentPane = new BorderPane();
+		entertainmentPane.setTop(currentBoroughText);
+		BorderPane.setAlignment(currentBoroughText, Pos.CENTER);
+		entertainmentPane.setLeft(favoriteBox);
+		entertainmentPane.setRight(entertainmentOptionsBox);
+		entertainmentPane.setCenter(scrollManhattanMap);
+		
+		entertainmentScene = new Scene(entertainmentPane, 750, 700);
+	}
+
+	private void entertainment() 
+	{
 		architectureCheck = new CheckBox("Architecture");
 		barsCheck = new CheckBox("Bars");
 		museumsCheck = new CheckBox("Museums");
 		restaurantsCheck = new CheckBox("Restaurants");
-		
-		mapOfManhattan();
-		
 		entertainmentOptionsBox = new VBox();
 		entertainmentOptionsBox.getChildren().addAll(architectureCheck, barsCheck, museumsCheck, restaurantsCheck);
 		entertainmentOptionsBox.setAlignment(Pos.CENTER_LEFT);
 		entertainmentOptionsBox.setPadding(new Insets(0,20,10,20));
 		entertainmentOptionsBox.setSpacing(40);
-		
-		entertainmentPane = new BorderPane();
-		entertainmentPane.setTop(currentBoroughText);
-		BorderPane.setAlignment(currentBoroughText, Pos.CENTER);
-		entertainmentPane.setRight(entertainmentOptionsBox);
-		entertainmentPane.setCenter(scrollManhattanMap);
-		
-		entertainmentScene = new Scene(entertainmentPane, 800, 800);
+	}
+
+	private void favorites() 
+	{
+		favoriteText = new Text("Favorites");
+		favoriteBox = new VBox(); 
+		favoriteBox.getChildren().addAll(favoriteText);
+		favoriteBox.setAlignment(Pos.CENTER);
+		favoriteBox.setPadding(new Insets(0,20,10,20));
+		favoriteBox.setSpacing(40);
 	}
 
 	private void mapOfManhattan() 
@@ -148,26 +170,36 @@ public class travelBuddyGUI extends Application
 		manhattanImageView = new ImageView();
 		manhattanImageView.setImage(manhattanImage);
 		
+		// Pins
 		pinImage = new Image("Pin.png");
 		pinImageView = new ImageView();
 		pinImageView.setImage(pinImage);
 		pinImageView.setFitHeight(20);
 		pinImageView.setFitWidth(20);
 		
-		Button pinButton = new Button();
+		pinButton = new Button();
 		pinButton.setGraphic(pinImageView);
 		pinButton.setOnAction(e -> 
 		{
-			Alert pinAlert = new Alert(AlertType.INFORMATION);
-			pinAlert.setTitle("Information");
-			pinAlert.setHeaderText("Name of Venue");
+			pinAlert = new Alert(AlertType.CONFIRMATION);
+			pinAlert.setTitle("Name Of Venue");
+			pinAlert.setHeaderText(null);
 			pinAlert.setContentText("Venue Information");
-			pinAlert.showAndWait();			
+			
+			buttonTypeFavorite = new ButtonType("Favorite");
+			buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
+			pinAlert.getButtonTypes().setAll(buttonTypeFavorite, buttonTypeCancel);
+
+			Optional<ButtonType> result = pinAlert.showAndWait();
+			if (result.get() == buttonTypeFavorite)
+			{
+				addToFavorite();
+			} 
 		});
 		
 		// CHANGE LOCATION OF PIN USE imageview.relocate(x,y)
-		pinButton.relocate(200, 400); // 400 is the farthest to the right the pins should go
-		//pinImageView2.relocate(400, 1200); 1200 is the lowest the pins should go
+		pinButton.relocate(200, 400); // 400 is the farthest to the right the pins should go; 1200 is the lowest the pins should go 
 		
 		//Map stack pane
 		Pane mapPane = new Pane();
@@ -177,5 +209,8 @@ public class travelBuddyGUI extends Application
 		scrollManhattanMap.setContent(mapPane);
 	}
 	
-	
+	private void addToFavorite()
+	{
+		System.out.println("Test");
+	}
 }
