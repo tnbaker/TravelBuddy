@@ -150,34 +150,8 @@ public class travelBuddyGUI extends Application
 		manhattanImage = new Image("MapOfManhattan.jpg");
 		manhattanImageView = new ImageView();
 		scrollManhattanMap = new ScrollPane();
-		zoomProperty = new SimpleDoubleProperty(200);
-		zoomProperty.addListener(new InvalidationListener()
-		{
-			@Override
-			public void invalidated(Observable arg0) 
-			{
-				// TODO Auto-generated method stub
-				manhattanImageView.setFitWidth(zoomProperty.get() * 4);
-                manhattanImageView.setFitHeight(zoomProperty.get() * 3);				
-			}
-			
-		});
 		
-		scrollManhattanMap.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>()
-		{
-			@Override
-			public void handle(ScrollEvent event) 
-			{
-				// TODO Auto-generated method stub
-				if (event.getDeltaY() > 0) 
-                    zoomProperty.set(zoomProperty.get() * 1.1);
-                else if (event.getDeltaY() < 0) 
-                    zoomProperty.set(zoomProperty.get() / 1.1);
-			}
-		});
-
 		manhattanImageView.setImage(manhattanImage);
-		manhattanImageView.preserveRatioProperty().set(true);
 		scrollManhattanMap.setContent(manhattanImageView);
 	}
 	
