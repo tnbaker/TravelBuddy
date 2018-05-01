@@ -1,9 +1,4 @@
 import javafx.application.*;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,10 +6,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -26,9 +23,8 @@ public class travelBuddyGUI extends Application
 	public Button startButton;
 	public CheckBox architectureCheck, barsCheck, museumsCheck, restaurantsCheck;
 	public ComboBox<String> selectCityBox, selectBoroughBox;
-	public DoubleProperty zoomProperty; 
-	public Image manhattanImage;
-	public ImageView manhattanImageView; 
+	public Image manhattanImage, pinImage;
+	public ImageView manhattanImageView, pinImageView; 
 	public Scene startScene, cityBoroughScene, entertainmentScene; 
 	public ScrollPane scrollManhattanMap;
 	public Stage window;
@@ -145,14 +141,40 @@ public class travelBuddyGUI extends Application
 		entertainmentScene = new Scene(entertainmentPane, 800, 800);
 	}
 
-	private void mapOfManhattan() {
+	private void mapOfManhattan() 
+	{
 		// Map of Manhattan
-		manhattanImage = new Image("MapOfManhattan.jpg");
+		manhattanImage = new Image("MapOfManhattan.jpg");		
 		manhattanImageView = new ImageView();
-		scrollManhattanMap = new ScrollPane();
-		
 		manhattanImageView.setImage(manhattanImage);
-		scrollManhattanMap.setContent(manhattanImageView);
+		
+		pinImage = new Image("Pin.png");
+		pinImageView = new ImageView();
+		pinImageView.setImage(pinImage);
+		pinImageView.setFitHeight(20);
+		pinImageView.setFitWidth(20);
+		
+		Button pinButton = new Button();
+		pinButton.setGraphic(pinImageView);
+		pinButton.setOnAction(e -> 
+		{
+			Alert pinAlert = new Alert(AlertType.INFORMATION);
+			pinAlert.setTitle("Information");
+			pinAlert.setHeaderText("Name of Venue");
+			pinAlert.setContentText("Venue Information");
+			pinAlert.showAndWait();			
+		});
+		
+		// CHANGE LOCATION OF PIN USE imageview.relocate(x,y)
+		pinButton.relocate(200, 400); // 400 is the farthest to the right the pins should go
+		//pinImageView2.relocate(400, 1200); 1200 is the lowest the pins should go
+		
+		//Map stack pane
+		Pane mapPane = new Pane();
+		mapPane.getChildren().addAll(manhattanImageView, pinButton);//, pinImageView2);
+		
+		scrollManhattanMap = new ScrollPane();
+		scrollManhattanMap.setContent(mapPane);
 	}
 	
 	
