@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -22,14 +23,15 @@ import javafx.stage.Stage;
 
 public class travelBuddyGUI extends Application
 {
-	public Alert pinAlert; 
+	public Alert pinAlert, favoriteAlert; 
 	public BorderPane entertainmentPane; 
 	public Button startButton, pinButton;
-	public ButtonType buttonTypeFavorite, buttonTypeCancel;
+	public ButtonType buttonTypeFavorite, buttonTypeCancel, buttonTypeRemove;
 	public CheckBox architectureCheck, barsCheck, museumsCheck, restaurantsCheck;
 	public ComboBox<String> selectCityBox, selectBoroughBox;
 	public Image manhattanImage, pinImage;
 	public ImageView manhattanImageView, pinImageView; 
+	public Pane mapPane; 
 	public Scene startScene, cityBoroughScene, entertainmentScene; 
 	public ScrollPane scrollManhattanMap;
 	public Stage window;
@@ -50,7 +52,7 @@ public class travelBuddyGUI extends Application
 		cityBoroughScreen();
 		entertainmentScreen();
 		
-		window.setScene(startScene);
+		window.setScene(entertainmentScene);
 		window.setTitle("Travel Buddy");
 		window.show();			
 	}
@@ -182,7 +184,7 @@ public class travelBuddyGUI extends Application
 		pinButton.setOnAction(e -> 
 		{
 			pinAlert = new Alert(AlertType.CONFIRMATION);
-			pinAlert.setTitle("Name Of Venue");
+			pinAlert.setTitle("Central Park");
 			pinAlert.setHeaderText(null);
 			pinAlert.setContentText("Venue Information");
 			
@@ -198,12 +200,11 @@ public class travelBuddyGUI extends Application
 			} 
 		});
 		
-		// CHANGE LOCATION OF PIN USE imageview.relocate(x,y)
-		pinButton.relocate(200, 400); // 400 is the farthest to the right the pins should go; 1200 is the lowest the pins should go 
+		pinButton.relocate(190, 140); 
 		
 		//Map stack pane
-		Pane mapPane = new Pane();
-		mapPane.getChildren().addAll(manhattanImageView, pinButton);//, pinImageView2);
+		mapPane = new Pane();
+		mapPane.getChildren().addAll(manhattanImageView, pinButton);
 		
 		scrollManhattanMap = new ScrollPane();
 		scrollManhattanMap.setContent(mapPane);
@@ -211,6 +212,32 @@ public class travelBuddyGUI extends Application
 	
 	private void addToFavorite()
 	{
-		System.out.println("Test");
+		String added = pinAlert.getTitle();
+		Hyperlink addedFav = new Hyperlink(added);
+		addedFav.setOnAction(e ->
+		{
+			favoriteAlert = new Alert(AlertType.CONFIRMATION);
+			favoriteAlert.setTitle(added);
+			favoriteAlert.setHeaderText(null);
+			favoriteAlert.setContentText("Venue Information");
+			
+			buttonTypeRemove = new ButtonType("Remove From Favorites");
+			buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
+			pinAlert.getButtonTypes().setAll(buttonTypeRemove, buttonTypeCancel);
+
+			Optional<ButtonType> result = pinAlert.showAndWait();
+			if (result.get() == buttonTypeRemove)
+			{
+				removeFavorite();
+			} 
+		});
+		favoriteBox.getChildren().addAll(addedFav);
+	}
+	
+	private void removeFavorite()
+	{
+		System.out.println("Remove\n");
+		favoriteBox.getChildren().remove(1);
 	}
 }
